@@ -1,0 +1,6 @@
+@CDM.Match_HostAddress = http://localhost:5079
+
+GET {{CDM.Match_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
