@@ -1,4 +1,5 @@
 using CDM.Match;
+using CDM.Match.Repository;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<MatchDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 // Injection de dépendances des repositories
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 
 
 builder.Services.AddControllers();
@@ -40,8 +42,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
-
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -52,7 +52,6 @@ if (app.Environment.IsDevelopment())
         options.Theme = ScalarTheme.Moon;
     });
 }
-
 
 app.UseHttpsRedirection();  
 app.UseAuthorization();

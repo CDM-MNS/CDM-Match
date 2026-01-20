@@ -7,10 +7,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["CDM.Match/CDM.Match.csproj", "CDM.Match/"]
-RUN dotnet restore "CDM.Match/CDM.Match.csproj"
+COPY ["CDM.Match.csproj", "./"]
+RUN dotnet restore "CDM.Match.csproj"
 COPY . .
-WORKDIR "/src/CDM.Match"
+WORKDIR "/src/"
 RUN dotnet build "./CDM.Match.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
