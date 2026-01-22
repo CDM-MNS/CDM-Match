@@ -1,5 +1,7 @@
 using CDM.Match.DTO;
 using CDM.Match.Models;
+using MassTransit;
+using MassTransit.Testing;
 using Microsoft.EntityFrameworkCore;
 
 namespace CDM.Match.Repository;
@@ -16,6 +18,7 @@ public class MatchRepository(MatchDbContext context) : IMatchRepository
     {
         return context.Matches.ToList();
     }
+    
     
     public async Task AddMatch(CreateMatchDto match)
     {
@@ -43,4 +46,7 @@ public class MatchRepository(MatchDbContext context) : IMatchRepository
         context.Matches.Remove(Match);
         await context.SaveChangesAsync();
     }
+    
+    
 }
+

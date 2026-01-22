@@ -1,7 +1,12 @@
+using System.Text.Json;
 using CDM.Match;
+using CDM.Match.Consumer;
 using CDM.Match.Repository;
+using CMD.Match.Messaging;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using UrbanFlow_trips.Infrastucture.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,11 +20,41 @@ builder.Services.AddDbContext<MatchDbContext>(options =>
 
 // Injection de dépendances des repositories
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
-
+builder.Services.AddScoped<IRabbitMQService, RabbitMQService>();
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
+
+// MassTransit configuration
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<GetOddsConsumer>();
+
+    x.SetDefaultEndpointNameFormatter();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("rabbitmq", "/", h =>
+        {
+            h.Username("user");
+            h.Password("password");
+        });
+
+        cfg.ConfigureJsonSerializerOptions(options =>
+        {
+            options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            return options;
+        });
+        
+        
+        cfg.ReceiveEndpoint("get-odds-out", e =>
+        {
+            e.UseRawJsonDeserializer();
+            e.ConfigureConsumer<GetOddsConsumer>(context);
+        });
+    });
+});
 
 var app = builder.Build();
 
