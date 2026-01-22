@@ -32,7 +32,7 @@ public class MatchController(IMatchRepository matchRepository, IRabbitMQService 
     [HttpPost("odds")]
     public IActionResult GetOdds([FromBody] GetOddsRequestDTO odds)
     {
-        mq.PublishAsync("get-odds-in", odds, "odds.get");
+        mq.PublishAsync("get-odds", odds, "odds.get");
         return Ok("Message published");
     }
     

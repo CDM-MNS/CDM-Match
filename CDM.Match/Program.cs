@@ -48,10 +48,12 @@ builder.Services.AddMassTransit(x =>
         });
         
         
-        cfg.ReceiveEndpoint("get-odds-out", e =>
+        cfg.ReceiveEndpoint("get-odds", e =>
         {
+            
             e.UseRawJsonDeserializer();
             e.ConfigureConsumer<GetOddsConsumer>(context);
+            
         });
     });
 });
